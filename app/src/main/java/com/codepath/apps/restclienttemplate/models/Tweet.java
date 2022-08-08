@@ -13,6 +13,7 @@ public class Tweet {
     public String body;
     public String createdAt;
     public User user;
+    public long id;
 
 
     public static Tweet fromJson(JSONObject json) throws JSONException {
@@ -21,6 +22,7 @@ public class Tweet {
         tweet.body = json.getString("text");
         tweet.createdAt = json.getString("created_at");
         tweet.user = User.fromJson(json.getJSONObject("user"));
+        tweet.id = json.getLong("id");
 
         return tweet;
     }
