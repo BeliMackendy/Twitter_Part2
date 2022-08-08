@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp">
 
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
     <ImageView
         android:id="@+id/ivProfileImage"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_below="@id/divider"
+        android:layout_marginTop="10dp"
         android:contentDescription="@string/todo"
         tools:ignore="ImageContrastCheck"
         tools:srcCompat="@tools:sample/avatars" />
@@ -17,7 +26,9 @@
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/divider"
         android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
         android:layout_toEndOf="@+id/ivProfileImage"
         android:textStyle="bold" />
 
@@ -25,21 +36,82 @@
         android:id="@+id/tvScreenName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_below="@id/divider"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="10dp"
         android:layout_toEndOf="@+id/tvName" />
 
     <TextView
         android:id="@+id/tvTimestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:layout_below="@id/divider"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
         android:layout_toEndOf="@+id/tvScreenName" />
 
     <TextView
         android:id="@+id/tvBody"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tvName"
+        android:layout_below="@+id/tvScreenName"
         android:layout_marginStart="5dp"
+        android:layout_marginTop="2dp"
         android:layout_toEndOf="@+id/ivProfileImage" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvBody"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:contentDescription="@string/todo"
+        app:srcCompat="@drawable/ic_vector_reply_stroke"
+        tools:ignore="ImageContrastCheck" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvBody"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/imageView"
+        android:contentDescription="@string/todo"
+        app:srcCompat="@drawable/ic_vector_retweet_stroke"
+        tools:ignore="ImageContrastCheck" />
+
+    <TextView
+        android:id="@+id/tvRetweet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvBody"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/imageView2"
+        android:text="@string/Zero" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvBody"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/tvRetweet"
+        android:contentDescription="@string/todo"
+        app:srcCompat="@drawable/ic_vector_heart_stroke"
+        tools:ignore="ImageContrastCheck" />
+
+    <TextView
+        android:id="@+id/tvLike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvBody"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/imageView3"
+        android:text="@string/Zero" />
 </RelativeLayout>

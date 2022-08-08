@@ -46,6 +46,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         holder.tvScreenName.setText("@" + tweet.user.screenName);
         holder.tvTimestamp.setText(tweet.getFormattedTimestamp());
         holder.tvBody.setText("" + tweet.body);
+        holder.tvRetweet.setText("" + tweet.retweetCount);
+        holder.tvLike.setText("" + tweet.favoriteCount);
     }
 
     @Override
@@ -71,6 +73,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         TextView tvBody;
         ImageView ivProfileImage;
         TextView tvTimestamp;
+        TextView tvRetweet;
+        TextView tvLike;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,6 +84,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvBody = itemView.findViewById(R.id.tvBody);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
+            tvRetweet = itemView.findViewById(R.id.tvRetweet);
+            tvLike = itemView.findViewById(R.id.tvLike);
         }
     }
 }
