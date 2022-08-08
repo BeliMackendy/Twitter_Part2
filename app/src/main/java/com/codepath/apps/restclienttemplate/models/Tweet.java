@@ -18,6 +18,8 @@ public class Tweet {
     public long id;
     public int retweetCount;
     public int favoriteCount;
+    public String type;
+    public String media_url;
 
     public Tweet() {
     }
@@ -31,6 +33,17 @@ public class Tweet {
         tweet.id = json.getLong("id");
         tweet.retweetCount = json.getInt("retweet_count");
         tweet.favoriteCount = json.getInt("favorite_count");
+
+        JSONObject entities = json.getJSONObject("entities");
+        if(entities.has("media")) {
+
+            tweet.type = entities.getJSONArray("media").getJSONObject(0).getString("type");
+            tweet.media_url = entities.getJSONArray("media").getJSONObject(0).getString("media_url");
+        }
+        else {
+            tweet.type = null;
+            tweet.media_url = null;
+        }
 
         return tweet;
     }

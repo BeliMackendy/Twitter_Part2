@@ -23,6 +23,7 @@ public class TweetDetailActivity extends AppCompatActivity {
     ImageView ivProfileImage;
     TextView tvRetweet;
     TextView tvLike;
+    ImageView ivImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,12 +35,10 @@ public class TweetDetailActivity extends AppCompatActivity {
         tvBody = findViewById(R.id.tvBody);
         tvTimestamp = findViewById(R.id.tvTimestamp);
         ivProfileImage = findViewById(R.id.ivProfileImage);
-        tvRetweet = findViewById(R.id.tvRetweet);
-        tvLike = findViewById(R.id.tvLike);
+        ivImage = findViewById(R.id.ivImage);
 
         // unwrap the Tweet passed in via intent, using its simple name as a key
         tweet = Parcels.unwrap(getIntent().getParcelableExtra("tweet"));
-
         tvName.setText(tweet.user.name);
         tvScreenName.setText("@" + tweet.user.screenName);
         Glide.with(this)
@@ -48,7 +47,14 @@ public class TweetDetailActivity extends AppCompatActivity {
                 .into(ivProfileImage);
         tvBody.setText("" + tweet.body);
         tvTimestamp.setText(tweet.getFormattedTimestamp());
-        tvRetweet.setText("" + tweet.retweetCount);
-        tvLike.setText("" + tweet.favoriteCount);
+        Glide
+                .with(this)
+                .load(tweet.media_url)
+                .transform(new RoundedCorners(100))
+                .into(ivImage);
+
+
+
+
     }
 }
