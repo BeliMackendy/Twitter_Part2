@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="5dp">
 
     <View
@@ -27,8 +27,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/divider"
-        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
+        android:layout_marginStart="5dp"
         android:layout_toEndOf="@+id/ivProfileImage"
         android:textStyle="bold" />
 
@@ -37,8 +37,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/divider"
-        android:layout_marginStart="3dp"
         android:layout_marginTop="10dp"
+        android:layout_marginStart="3dp"
         android:layout_toEndOf="@+id/tvName" />
 
     <TextView
@@ -46,8 +46,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/divider"
-        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
+        android:layout_marginStart="5dp"
         android:layout_toEndOf="@+id/tvScreenName" />
 
     <TextView
@@ -57,7 +57,9 @@
         android:layout_below="@+id/tvScreenName"
         android:layout_marginStart="5dp"
         android:layout_marginTop="2dp"
-        android:layout_toEndOf="@+id/ivProfileImage" />
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:autoLink="all"
+        android:linksClickable="true" />
 
     <ImageView
         android:id="@+id/imageView"
