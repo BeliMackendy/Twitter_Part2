@@ -7,5 +7,6 @@
     <string name="intent_host">cprest</string>
     <string name="todo">TODO</string>
     <string name="Zero">0</string>
+    <string name="detail_tweet">Detail Tweet</string>
 
 </resources>
