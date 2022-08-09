@@ -1,11 +1,13 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,8 +20,9 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder> {
+public class TweetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     List<Tweet> tweets;
+    private final int VIDEO = 1;
 
     public TweetsAdapter(List<Tweet> tweets) {
         this.tweets = tweets;
@@ -27,30 +30,62 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.item_tweet, parent, false);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        // Return a new holder instance
-        return new ViewHolder(view);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        if (viewType == VIDEO) {// Inflate the custom layout
+            View view2 = inflater.inflate(R.layout.item_tweet_video, parent, false);
+
+            // Return a new holder instance
+            return new ViewHolder2(view2);
+        }// Inflate the custom layout
+        else {
+            View view1 = inflater.inflate(R.layout.item_tweet, parent, false);
+
+            // Return a new holder instance
+            return new ViewHolder1(view1);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
         Tweet tweet = tweets.get(position);
 
-        Glide
-                .with(holder.itemView.getContext())
-                .load(tweet.user.profileImageUrl)
-                .transform(new RoundedCorners(100))
-                .into(holder.ivProfileImage);
-        holder.tvName.setText(tweet.user.name);
-        holder.tvScreenName.setText("@" + tweet.user.screenName);
-        holder.tvTimestamp.setText(tweet.getFormattedTimestamp());
-        holder.tvBody.setText("" + tweet.body);
-        holder.tvRetweet.setText("" + tweet.retweetCount);
-        holder.tvLike.setText("" + tweet.favoriteCount);
+        if (holder.getItemViewType() == VIDEO) {
+            ViewHolder2 holder2 = (ViewHolder2) holder;
+
+            holder2.tvName.setText(tweet.user.name);
+            holder2.tvScreenName.setText("@" + tweet.user.screenName);
+            Glide
+                    .with(holder.itemView.getContext())
+                    .load(tweet.user.profileImageUrl)
+                    .transform(new RoundedCorners(100))
+                    .into(holder2.ivProfileImage);
+            holder2.tvBody.setText("" + tweet.body);
+            holder2.tvTimestamp.setText(tweet.getFormattedTimestamp());
+            holder2.tvRetweet.setText("" + tweet.retweetCount);
+            holder2.tvLike.setText("" + tweet.favoriteCount);
+            Uri uri = Uri.parse(tweet.media_url);
+            holder2.vViewTweet.setVideoURI(uri);
+            holder2.vViewTweet.start();
+        }
+        else {
+
+            ViewHolder1 holder1 = (ViewHolder1) holder;
+
+            holder1.tvName.setText(tweet.user.name);
+            holder1.tvScreenName.setText("@" + tweet.user.screenName);
+            Glide
+                    .with(holder.itemView.getContext())
+                    .load(tweet.user.profileImageUrl)
+                    .transform(new RoundedCorners(100))
+                    .into(holder1.ivProfileImage);
+            holder1.tvBody.setText("" + tweet.body);
+            holder1.tvTimestamp.setText(tweet.getFormattedTimestamp());
+            holder1.tvRetweet.setText("" + tweet.retweetCount);
+            holder1.tvLike.setText("" + tweet.favoriteCount);
+        }
     }
 
     @Override
@@ -68,7 +103,23 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    @Override
+    public int getItemViewType(int position) {
+        if(tweets.get(position).type!=null){
+            if(tweets.get(position).type.contentEquals("video")){
+                return VIDEO;
+            }
+            else
+            {
+                return 0;
+            }
+        }else
+        {
+            return 0;
+        }
+    }
+
+    public class ViewHolder1 extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvName;
         TextView tvScreenName;
         TextView tvBody;
@@ -77,7 +128,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         TextView tvRetweet;
         TextView tvLike;
 
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder1(@NonNull View itemView) {
             super(itemView);
 
             tvName = itemView.findViewById(R.id.tvName);
@@ -103,6 +154,32 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 i.putExtra("tweet", Parcels.wrap(tweet));
                 v.getContext().startActivity(i);
             }
+        }
+    }
+
+    public class ViewHolder2 extends RecyclerView.ViewHolder{
+        TextView tvName;
+        TextView tvScreenName;
+        TextView tvBody;
+        TextView tvTimestamp;
+        ImageView ivProfileImage;
+        TextView tvReply;
+        TextView tvRetweet;
+        TextView tvLike;
+        VideoView vViewTweet;
+
+        public ViewHolder2(@NonNull View itemView) {
+            super(itemView);
+
+            tvName = itemView.findViewById(R.id.tvName);
+            tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            tvBody = itemView.findViewById(R.id.tvBody);
+            tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
+            ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
+            tvReply = itemView.findViewById(R.id.tvReply);
+            tvRetweet = itemView.findViewById(R.id.tvRetweet);
+            tvLike = itemView.findViewById(R.id.tvLike);
+            vViewTweet = itemView.findViewById(R.id.vViewTweet);
         }
     }
 }
