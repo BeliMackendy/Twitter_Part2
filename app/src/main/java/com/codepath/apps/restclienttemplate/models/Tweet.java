@@ -41,8 +41,6 @@ public class Tweet {
     @ColumnInfo
     public long userId;
 
-
-
     public Tweet() {
     }
 
@@ -82,7 +80,11 @@ public class Tweet {
     }
 
     public String getFormattedTimestamp(){
-        return TimeFormatter.getTimeStamp(createdAt);
+        if(createdAt!=null)
+        return TimeFormatter.getTimeDifference(createdAt);
+        else {
+        return null;
+        }
     }
 
 }
