@@ -6,10 +6,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.TweetDAO;
+import com.codepath.apps.restclienttemplate.models.TweetWithUser;
+import com.codepath.apps.restclienttemplate.models.User;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
@@ -31,6 +35,7 @@ public class TimelineActivity extends AppCompatActivity {
     private SwipeRefreshLayout swipeContainer;
     // Store a member variable for the listener
     private EndlessRecyclerViewScrollListener scrollListener;
+    private TweetDAO tweetDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,7 @@ public class TimelineActivity extends AppCompatActivity {
 
         tweets = new ArrayList<>();
         client= TwitterApp.getRestClient(this);
+        tweetDAO = ((TwitterApp) getApplicationContext()).getMyDatabase().TweetDAO();
 
 
         rvTweet =findViewById(R.id.rvTweet);
@@ -59,6 +65,19 @@ public class TimelineActivity extends AppCompatActivity {
         rvTweet.setLayoutManager(linearLayoutManager);
 
         swipeContainer = findViewById(R.id.swipeContainer);
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "Showing data from database");
+                List<TweetWithUser> tweetWithUsers = tweetDAO.recentItems();
+                List<Tweet> tweetFromDB = TweetWithUser.getTweetList(tweetWithUsers);
+                adapter.clear();
+                adapter.addTweets(tweetFromDB);
+
+            }
+        });
+
 
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -91,11 +110,24 @@ public class TimelineActivity extends AppCompatActivity {
                 Log.i(TAG, "onSuccess!"+json.toString());
                 JSONArray jsonArray = json.jsonArray;
                 try {
+                    List<Tweet> tweetsFromNetwork = Tweet.fromJsonArray(jsonArray);
                     adapter.clear();
-                    adapter.addTweets(Tweet.fromJsonArray(jsonArray));
+                    adapter.addTweets(tweetsFromNetwork);
 
                     // Now we call setRefreshing(false) to signal refresh has finished
                     swipeContainer.setRefreshing(false);
+
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i(TAG, "Saving data from database");
+                            List<User> usersFromNetwork =User.fromJsonArrary(tweetsFromNetwork);
+                            tweetDAO.insertModel(usersFromNetwork.toArray(new User[0]));
+                            tweetDAO.insertModel(tweetsFromNetwork.toArray(new Tweet[0]));
+
+
+                        }
+                    });
                 } catch (JSONException e) {
                     Log.e(TAG, "Json Exception: ",e);
                 }

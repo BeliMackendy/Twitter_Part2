@@ -2,6 +2,7 @@ package com.codepath.apps.restclienttemplate;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,7 +64,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     .transform(new RoundedCorners(100))
                     .into(holder2.ivProfileImage);
             holder2.tvBody.setText("" + tweet.body);
-            holder2.tvTimestamp.setText(tweet.getFormattedTimestamp());
+            holder2.tvTimestamp.setText(""+tweet.getFormattedTimestamp());
             holder2.tvRetweet.setText("" + tweet.retweetCount);
             holder2.tvLike.setText("" + tweet.favoriteCount);
             Uri uri = Uri.parse(tweet.media_url);
@@ -82,7 +83,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     .transform(new RoundedCorners(100))
                     .into(holder1.ivProfileImage);
             holder1.tvBody.setText("" + tweet.body);
-            holder1.tvTimestamp.setText(tweet.getFormattedTimestamp());
+            holder1.tvTimestamp.setText(""+tweet.getFormattedTimestamp());
             holder1.tvRetweet.setText("" + tweet.retweetCount);
             holder1.tvLike.setText("" + tweet.favoriteCount);
         }

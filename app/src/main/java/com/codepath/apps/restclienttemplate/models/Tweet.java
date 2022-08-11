@@ -1,5 +1,12 @@
 package com.codepath.apps.restclienttemplate.models;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import com.codepath.apps.restclienttemplate.TimeFormatter;
 
 import org.json.JSONArray;
@@ -11,15 +18,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Parcel
+@Entity(foreignKeys = @ForeignKey(entity=User.class, parentColumns="id", childColumns="userId"))
 public class Tweet {
-    public String body;
-    public String createdAt;
-    public User user;
+    @PrimaryKey
+    @ColumnInfo
     public long id;
+    @ColumnInfo
+    public String body;
+    @ColumnInfo
+    public String createdAt;
+    @ColumnInfo
     public int retweetCount;
+    @ColumnInfo
     public int favoriteCount;
+    @ColumnInfo
     public String type;
+    @ColumnInfo
     public String media_url;
+
+    @Ignore
+    public User user;
+    @ColumnInfo
+    public long userId;
+
+
 
     public Tweet() {
     }
@@ -27,10 +49,9 @@ public class Tweet {
     public static Tweet fromJson(JSONObject json) throws JSONException {
         Tweet tweet = new Tweet();
 
+        tweet.id = json.getLong("id");
         tweet.body = json.getString("text");
         tweet.createdAt = json.getString("created_at");
-        tweet.user = User.fromJson(json.getJSONObject("user"));
-        tweet.id = json.getLong("id");
         tweet.retweetCount = json.getInt("retweet_count");
         tweet.favoriteCount = json.getInt("favorite_count");
 
@@ -45,6 +66,10 @@ public class Tweet {
             tweet.media_url = null;
         }
 
+        User user = User.fromJson(json.getJSONObject("user"));
+        tweet.user = user;
+        tweet.userId = user.id;
+
         return tweet;
     }
 
@@ -57,7 +82,7 @@ public class Tweet {
     }
 
     public String getFormattedTimestamp(){
-        return TimeFormatter.getTimeDifference(createdAt);
+        return TimeFormatter.getTimeStamp(createdAt);
     }
 
 }
