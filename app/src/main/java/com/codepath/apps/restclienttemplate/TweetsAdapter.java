@@ -24,6 +24,7 @@ import java.util.List;
 public class TweetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     List<Tweet> tweets;
     private final int VIDEO = 1;
+    private final int IMAGE = 2;
 
     public TweetsAdapter(List<Tweet> tweets) {
         this.tweets = tweets;
@@ -39,7 +40,13 @@ public class TweetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             // Return a new holder instance
             return new ViewHolder2(view2);
-        }// Inflate the custom layout
+        }
+        if (viewType == IMAGE) {// Inflate the custom layout
+            View view3 = inflater.inflate(R.layout.item_tweet_image, parent, false);
+
+            // Return a new holder instance
+            return new ViewHolder3(view3);
+        }
         else {
             View view1 = inflater.inflate(R.layout.item_tweet, parent, false);
 
@@ -64,12 +71,32 @@ public class TweetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     .transform(new RoundedCorners(100))
                     .into(holder2.ivProfileImage);
             holder2.tvBody.setText("" + tweet.body);
-            holder2.tvTimestamp.setText(""+tweet.getFormattedTimestamp());
+            holder2.tvTimestamp.setText("" + tweet.getFormattedTimestamp());
             holder2.tvRetweet.setText("" + tweet.retweetCount);
             holder2.tvLike.setText("" + tweet.favoriteCount);
             Uri uri = Uri.parse(tweet.media_url);
             holder2.vViewTweet.setVideoURI(uri);
             holder2.vViewTweet.start();
+        }
+        if (holder.getItemViewType() == IMAGE) {
+            ViewHolder3 holder3 = (ViewHolder3) holder;
+
+            holder3.tvName.setText(tweet.user.name);
+            holder3.tvScreenName.setText("@" + tweet.user.screenName);
+            Glide
+                    .with(holder.itemView.getContext())
+                    .load(tweet.user.profileImageUrl)
+                    .transform(new RoundedCorners(100))
+                    .into(holder3.ivProfileImage);
+            holder3.tvBody.setText("" + tweet.body);
+            holder3.tvTimestamp.setText(tweet.getFormattedTimestamp());
+            holder3.tvRetweet.setText("" + tweet.retweetCount);
+            holder3.tvLike.setText("" + tweet.favoriteCount);
+            Glide
+                    .with(holder.itemView.getContext())
+                    .load(tweet.media_url)
+                    .transform(new RoundedCorners(100))
+                    .into(holder3.ivImage);
         }
         else {
 
@@ -83,7 +110,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     .transform(new RoundedCorners(100))
                     .into(holder1.ivProfileImage);
             holder1.tvBody.setText("" + tweet.body);
-            holder1.tvTimestamp.setText(""+tweet.getFormattedTimestamp());
+            holder1.tvTimestamp.setText("" + tweet.getFormattedTimestamp());
             holder1.tvRetweet.setText("" + tweet.retweetCount);
             holder1.tvLike.setText("" + tweet.favoriteCount);
         }
@@ -106,18 +133,15 @@ public class TweetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        if(tweets.get(position).type!=null){
-            if(tweets.get(position).type.contentEquals("video")){
+        if (tweets.get(position).type != null) {
+            if (tweets.get(position).type.contentEquals("video")) {
                 return VIDEO;
             }
-            else
-            {
-                return 0;
+            if (tweets.get(position).type.contentEquals("photo")) {
+                return IMAGE;
             }
-        }else
-        {
-            return 0;
         }
+        return 0;
     }
 
     public class ViewHolder1 extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -158,7 +182,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
-    public class ViewHolder2 extends RecyclerView.ViewHolder{
+    public class ViewHolder2 extends RecyclerView.ViewHolder {
         TextView tvName;
         TextView tvScreenName;
         TextView tvBody;
@@ -181,6 +205,47 @@ public class TweetsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             tvRetweet = itemView.findViewById(R.id.tvRetweet);
             tvLike = itemView.findViewById(R.id.tvLike);
             vViewTweet = itemView.findViewById(R.id.vViewTweet);
+        }
+    }
+
+    public class ViewHolder3 extends RecyclerView.ViewHolder implements View.OnClickListener {
+        TextView tvName;
+        TextView tvScreenName;
+        TextView tvBody;
+        TextView tvTimestamp;
+        ImageView ivProfileImage;
+        TextView tvReply;
+        TextView tvRetweet;
+        TextView tvLike;
+        ImageView ivImage;
+
+        public ViewHolder3(@NonNull View itemView) {
+            super(itemView);
+
+            tvName = itemView.findViewById(R.id.tvName);
+            tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            tvBody = itemView.findViewById(R.id.tvBody);
+            tvTimestamp = itemView.findViewById(R.id.tvTimestamp);
+            ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
+            tvReply = itemView.findViewById(R.id.tvReply);
+            tvRetweet = itemView.findViewById(R.id.tvRetweet);
+            tvLike = itemView.findViewById(R.id.tvLike);
+            ivImage = itemView.findViewById(R.id.ivImage);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            // gets item position
+            int position = getAdapterPosition();
+            // make sure the position is valid, i.e. actually exists in the view
+            if (position != RecyclerView.NO_POSITION) {
+                Tweet tweet = tweets.get(position);
+
+                Intent i = new Intent(v.getContext(), TweetDetailActivity.class);
+                i.putExtra("tweet", Parcels.wrap(tweet));
+                v.getContext().startActivity(i);
+            }
         }
     }
 }
