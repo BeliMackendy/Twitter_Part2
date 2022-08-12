@@ -1,5 +1,6 @@
 package com.codepath.apps.restclienttemplate;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,6 +10,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.models.TweetDAO;
@@ -54,12 +58,12 @@ public class TimelineActivity extends AppCompatActivity {
         swipeContainer = findViewById(R.id.swipeContainer);
 
         tweets = new ArrayList<>();
-        client= TwitterApp.getRestClient(this);
+        client = TwitterApp.getRestClient(this);
         tweetDAO = ((TwitterApp) getApplicationContext()).getMyDatabase().TweetDAO();
 
 
-        rvTweet =findViewById(R.id.rvTweet);
-        adapter= new TweetsAdapter(tweets);
+        rvTweet = findViewById(R.id.rvTweet);
+        adapter = new TweetsAdapter(tweets);
         rvTweet.setAdapter(adapter);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvTweet.setLayoutManager(linearLayoutManager);
@@ -102,12 +106,29 @@ public class TimelineActivity extends AppCompatActivity {
         populateHomeTimeline();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if (item.getItemId() == R.id.Compose) {
+            Toast.makeText(this, "Compose", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void populateHomeTimeline() {
 
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
-                Log.i(TAG, "onSuccess!"+json.toString());
+                Log.i(TAG, "onSuccess!" + json.toString());
                 JSONArray jsonArray = json.jsonArray;
                 try {
                     List<Tweet> tweetsFromNetwork = Tweet.fromJsonArray(jsonArray);
@@ -121,7 +142,7 @@ public class TimelineActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             Log.i(TAG, "Saving data from database");
-                            List<User> usersFromNetwork =User.fromJsonArrary(tweetsFromNetwork);
+                            List<User> usersFromNetwork = User.fromJsonArrary(tweetsFromNetwork);
                             tweetDAO.insertModel(usersFromNetwork.toArray(new User[0]));
                             tweetDAO.insertModel(tweetsFromNetwork.toArray(new Tweet[0]));
 
@@ -129,13 +150,13 @@ public class TimelineActivity extends AppCompatActivity {
                         }
                     });
                 } catch (JSONException e) {
-                    Log.e(TAG, "Json Exception: ",e);
+                    Log.e(TAG, "Json Exception: ", e);
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
-                Log.e(TAG, "onFailure ",throwable );
+                Log.e(TAG, "onFailure ", throwable);
             }
         });
     }
@@ -162,7 +183,7 @@ public class TimelineActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
 
             }
-        },tweets.get(tweets.size()-1).id);
+        }, tweets.get(tweets.size() - 1).id);
 
     }
 }
