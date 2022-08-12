@@ -8,5 +8,7 @@
     <string name="todo">TODO</string>
     <string name="Zero">0</string>
     <string name="detail_tweet">Detail Tweet</string>
+    <string name="tweet">Tweet</string>
+    <string name="what_happening">What\' happening</string>
 
 </resources>
