@@ -3,11 +3,15 @@ package com.codepath.apps.restclienttemplate;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
@@ -21,6 +25,8 @@ import okhttp3.Headers;
 public class ComposeActivity extends AppCompatActivity {
     EditText etCompose;
     Button btnTweet;
+    TextView tvDisplay;
+    TextView tvCharacter;
 
     TwitterClient client;
 
@@ -34,7 +40,36 @@ public class ComposeActivity extends AppCompatActivity {
         client = TwitterApp.getRestClient(this);
 
         etCompose = findViewById(R.id.etCompose);
+        tvDisplay = findViewById(R.id.tvDisplay);
+        tvCharacter = findViewById(R.id.tvCharacter);
         btnTweet = findViewById(R.id.btTweet);
+
+        etCompose.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if(s.length()<=280) {
+                    tvDisplay.setText("" + s.length());
+                    tvDisplay.setTextColor(Color.parseColor("#c6d0c2"));
+                    tvCharacter.setTextColor(Color.parseColor("#c6d0c2"));
+                    btnTweet.setEnabled(true);
+                }else
+                {
+                    tvDisplay.setTextColor(Color.parseColor("#DE0F17"));
+                    tvCharacter.setTextColor(Color.parseColor("#DE0F17"));
+                    btnTweet.setEnabled(false);
+                }
+            }
+        });
 
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
