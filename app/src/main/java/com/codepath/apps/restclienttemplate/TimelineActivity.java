@@ -1,5 +1,9 @@
 package com.codepath.apps.restclienttemplate;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -7,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,6 +28,7 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,13 +120,35 @@ public class TimelineActivity extends AppCompatActivity {
         return true;
     }
 
+    ActivityResultLauncher<Intent> composeActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    // If the user comes back to this activity from EditActivity
+                    // with no error or cancellation
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        // Get the data passed from EditActivity
+//                        String editedString = data.getExtras().getString("newString");
+                        Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
+
+                        tweets.add(0,tweet);
+
+                        adapter.notifyItemInserted(0);
+                        rvTweet.smoothScrollToPosition(0);
+                    }
+                }
+            });
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         if (item.getItemId() == R.id.Compose) {
             Toast.makeText(this, "Compose", Toast.LENGTH_SHORT).show();
             Intent i  = new Intent(this,ComposeActivity.class);
-            startActivity(i);
+//            startActivity(i);
+            composeActivityResultLauncher.launch(i);
             return true;
         }
         return super.onOptionsItemSelected(item);
