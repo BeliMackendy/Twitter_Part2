@@ -11,9 +11,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
@@ -27,6 +30,11 @@ public class ComposeActivity extends AppCompatActivity {
     Button btnTweet;
     TextView tvDisplay;
     TextView tvCharacter;
+
+    TextView tvusername;
+    TextView tvuserscreenName;
+    ImageView ivProfileImage;
+    ImageView ivclose;
 
     TwitterClient client;
 
@@ -43,6 +51,31 @@ public class ComposeActivity extends AppCompatActivity {
         tvDisplay = findViewById(R.id.tvDisplay);
         tvCharacter = findViewById(R.id.tvCharacter);
         btnTweet = findViewById(R.id.btTweet);
+
+        tvusername = findViewById(R.id.tvusername);
+        tvuserscreenName = findViewById(R.id.tvuserscreenName);
+        ivProfileImage = findViewById(R.id.ivProfileImage);
+        ivclose = findViewById(R.id.ivClose);
+
+        ivclose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        String user_profile_image_url = getIntent().getStringExtra("user_profile_image_url");
+        String user_screenName = getIntent().getStringExtra("user_screenName");
+        String username = getIntent().getStringExtra("username");
+
+        tvusername.setText(username);
+        tvuserscreenName.setText("@"+user_screenName);
+
+        Glide
+                .with(this)
+                .load(user_profile_image_url)
+                .transform(new RoundedCorners(100))
+                .into(ivProfileImage);
 
         etCompose.addTextChangedListener(new TextWatcher() {
             @Override

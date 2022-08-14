@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar1"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="70dp"
         android:autofillHints=""
         android:ems="10"
         android:gravity="start|top"
@@ -63,6 +63,50 @@
         android:text="@string/tweet"
         android:textColor="#ffffec"
         tools:ignore="TextContrastCheck,TextContrastCheck" />
+
+    <ImageView
+        android:id="@+id/ivClose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar1"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="11dp"
+        android:contentDescription="@string/todo"
+        app:srcCompat="@drawable/ic_vector_close"
+        tools:ignore="ImageContrastCheck" />
+
+    <TextView
+        android:id="@+id/tvusername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar1"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="15dp"
+        android:layout_toStartOf="@+id/ivProfileImage"
+        app:layout_constraintEnd_toStartOf="@+id/ivProfileImage" />
+
+    <TextView
+        android:id="@+id/tvuserscreenName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvusername"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="15dp"
+        android:layout_toStartOf="@+id/ivProfileImage"
+        app:layout_constraintTop_toBottomOf="@+id/tvusername" />
+
+    <ImageView
+        android:id="@+id/ivProfileImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/toolbar1"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="11dp"
+
+        android:layout_marginEnd="12dp"
+        android:contentDescription="@string/todo"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:srcCompat="@tools:sample/avatars[9]" />
 
 
 </RelativeLayout>

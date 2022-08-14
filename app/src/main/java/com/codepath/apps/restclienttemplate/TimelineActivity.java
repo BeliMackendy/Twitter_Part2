@@ -28,6 +28,7 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
@@ -47,6 +48,10 @@ public class TimelineActivity extends AppCompatActivity {
     // Store a member variable for the listener
     private EndlessRecyclerViewScrollListener scrollListener;
     private TweetDAO tweetDAO;
+
+    String username;
+    String user_profile_image_url;
+    String user_screenName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +116,7 @@ public class TimelineActivity extends AppCompatActivity {
         rvTweet.addOnScrollListener(scrollListener);
 
         populateHomeTimeline();
+        populateUserTimeline();
     }
 
     @Override
@@ -147,6 +153,9 @@ public class TimelineActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.Compose) {
             Toast.makeText(this, "Compose", Toast.LENGTH_SHORT).show();
             Intent i  = new Intent(this,ComposeActivity.class);
+            i.putExtra("username",username);
+            i.putExtra("user_profile_image_url",user_profile_image_url);
+            i.putExtra("user_screenName",user_screenName);
 //            startActivity(i);
             composeActivityResultLauncher.launch(i);
             return true;
@@ -155,7 +164,6 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     private void populateHomeTimeline() {
-
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
@@ -180,6 +188,31 @@ public class TimelineActivity extends AppCompatActivity {
 
                         }
                     });
+                } catch (JSONException e) {
+                    Log.e(TAG, "Json Exception: ", e);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.e(TAG, "onFailure ", throwable);
+            }
+        });
+    }
+
+    private void populateUserTimeline() {
+        client.getUser_timeline(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                Log.i(TAG, "onSuccess!" + json.toString());
+                JSONArray jsonArray = json.jsonArray;
+                try {
+                    JSONObject user = jsonArray.getJSONObject(0).getJSONObject("user");
+
+                    username = user.getString("name");
+                    user_profile_image_url = user.getString("profile_image_url");
+                    user_screenName = user.getString("screen_name");
+
                 } catch (JSONException e) {
                     Log.e(TAG, "Json Exception: ", e);
                 }
