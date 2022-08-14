@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
@@ -25,6 +26,7 @@ import com.codepath.apps.restclienttemplate.models.TweetDAO;
 import com.codepath.apps.restclienttemplate.models.TweetWithUser;
 import com.codepath.apps.restclienttemplate.models.User;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +46,7 @@ public class TimelineActivity extends AppCompatActivity {
     List<Tweet> tweets;
     RecyclerView rvTweet;
     TweetsAdapter adapter;
+    FloatingActionButton fab_button;
 
     private SwipeRefreshLayout swipeContainer;
     private TweetDAO tweetDAO;
@@ -56,6 +59,8 @@ public class TimelineActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
+
+        fab_button = findViewById(R.id.fab_button);
 
         // Find the toolbar view inside the activity layout
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -106,9 +111,36 @@ public class TimelineActivity extends AppCompatActivity {
         };
         // Adds the scroll listener to RecyclerView
         rvTweet.addOnScrollListener(scrollListener);
+        rvTweet.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0)
+                    fab_button.hide();
+                else
+                    fab_button.show();
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+
+        fab_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LaunchCompose();
+            }
+        });
 
         populateHomeTimeline();
         populateUserTimeline();
+    }
+
+    public void LaunchCompose() {
+        Intent i = new Intent(this, ComposeActivity.class);
+        i.putExtra("username", username);
+        i.putExtra("user_profile_image_url", user_profile_image_url);
+        i.putExtra("user_screenName", user_screenName);
+//            startActivity(i);
+        composeActivityResultLauncher.launch(i);
+
     }
 
     @Override
@@ -131,7 +163,7 @@ public class TimelineActivity extends AppCompatActivity {
 //                        String editedString = data.getExtras().getString("newString");
                         Tweet tweet = Parcels.unwrap(Objects.requireNonNull(data).getParcelableExtra("tweet"));
 
-                        tweets.add(0,tweet);
+                        tweets.add(0, tweet);
 
                         adapter.notifyItemInserted(0);
                         rvTweet.smoothScrollToPosition(0);
@@ -143,11 +175,11 @@ public class TimelineActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         if (item.getItemId() == R.id.Compose) {
-            Toast.makeText(this, "Compose", Toast.LENGTH_SHORT).show();
-            Intent i  = new Intent(this,ComposeActivity.class);
-            i.putExtra("username",username);
-            i.putExtra("user_profile_image_url",user_profile_image_url);
-            i.putExtra("user_screenName",user_screenName);
+//            Toast.makeText(this, "Compose", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(this, ComposeActivity.class);
+            i.putExtra("username", username);
+            i.putExtra("user_profile_image_url", user_profile_image_url);
+            i.putExtra("user_screenName", user_screenName);
 //            startActivity(i);
             composeActivityResultLauncher.launch(i);
             return true;
